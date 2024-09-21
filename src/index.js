@@ -53,7 +53,7 @@ const scrape = async (user, dataClient) => {
     await browser.close();
 
     // Terminar el proceso hijo
-    return urlPayment
+    return { urlPayment, user }
 
   } catch (error) {
     console.error(error)
