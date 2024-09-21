@@ -20,7 +20,7 @@ const COUNTRY = {
 }
 
 const scrape = async (user, dataClient) => {
-
+  let urlPayment
   const { personalFormData, healthFormData, characterFormData, whsFormData } = dataClient
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
@@ -48,14 +48,12 @@ const scrape = async (user, dataClient) => {
 
 
     await acceptTermsConditions(page)
-    await payApplication(page, user)
-
-    await new Promise((resolve) => setTimeout(resolve, 15000));
+    urlPayment = await payApplication(page, user)
 
     await browser.close();
 
     // Terminar el proceso hijo
-
+    return urlPayment
 
   } catch (error) {
     console.error(error)

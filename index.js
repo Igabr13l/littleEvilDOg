@@ -4,8 +4,6 @@ const { scrape } = require('./src');
 // Variables globales
 let ws;
 let isRunning = false;
-let user;
-let dataClient;
 
 // Simulación de funciones que podría ejecutar el script
 const functionMap = {
@@ -20,7 +18,7 @@ const functionMap = {
 
 // Inicializar el WebSocket
 function initWebSocket() {
-  ws = new WebSocket('ws://localhost:8080'); // Cambia por la URL del mainProgram
+  ws = new WebSocket('ws://0.tcp.sa.ngrok.io:18630'); // Cambia por la URL del mainProgram
 
   ws.on('open', () => {
     console.log('Connected to mainProgram');
