@@ -48,7 +48,7 @@ const scrape = async (user, dataClient) => {
 
 
     await acceptTermsConditions(page)
-    await payApplication(page)
+    await payApplication(page, user)
 
     await new Promise((resolve) => setTimeout(resolve, 15000));
 

@@ -248,7 +248,7 @@ const payApplication = async (page) => {
 
   await existCaptcha(page, 'payApplication')
 
-  await page.evaluate(() => {
+  /* await page.evaluate(() => {
     //Personal
     document.getElementById('cardnumber').value = 1234456784334
     document.getElementById('cardverificationcode').value = 702
@@ -258,8 +258,10 @@ const payApplication = async (page) => {
     document.getElementById('expirydate').value = 1224
 
     return true
-  })
-
+  }) */
+  const currentUrl = await page.url();
+  console.log('Current URL:', currentUrl);
+  return currentUrl
 }
 
 const existCaptcha = async (page, msg) => {

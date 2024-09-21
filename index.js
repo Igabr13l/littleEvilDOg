@@ -1,98 +1,108 @@
-const { scrape } = require('./src/index');
-const { GENDER_OPTIONS, PREFERED_TITLE_OPTIONS, COUNTRY_BIRTH_OPTIONS, COUNTRY_ADDRESS_OPTIONS, NO_YES_OPTIONS, COMUNICATION_METHOD_OPTIONS, OTHER_IDENTIFICATION_TYPE_OPTIONS } = require('./constants/index')
+// Dependencia WebSocket
+const WebSocket = require('ws');
+const { scrape } = require('./src');
+// Variables globales
+let ws;
+let isRunning = false;
+let user;
+let dataClient;
 
-const personalFormData = {
-  personalDetailsFormData: {
-    familyName: 'Gabriel',
-    givenName1: 'Ivan',
-    givenName2: 'Gabriel',
-    givenName3: 'Ivan',
-    otherNames: 'Gabriel',
-    preferedTitle: PREFERED_TITLE_OPTIONS.MR, // Mr
-    /* otherTitle: 'Gabriel', */
-    gender: GENDER_OPTIONS.MALE,
-    dateOfBirth: '3 September, 1999',
-    countryOfBirth: COUNTRY_BIRTH_OPTIONS.ARGENTINA, // Argentina
+// Simulación de funciones que podría ejecutar el script
+const functionMap = {
+  scrape,
+  fakeScrape: async (user, data) => {
+    console.log('Fake scraping data...');
+    console.log(user)
+    console.log(data)
+    return 'Fake data functs';
+  }
+};
 
-    streetNumber: '1234',
-    streetName: 'calle',
-    suburb: 'flowers',
-    city: 'buenos aires',
-    province_state: 'buenos aires',
-    pin_zipCode: 'CF1423',
-    country: COUNTRY_ADDRESS_OPTIONS.ARGENTINA, // Argentina
+// Inicializar el WebSocket
+function initWebSocket() {
+  ws = new WebSocket('ws://localhost:8080'); // Cambia por la URL del mainProgram
 
-    phoneDayTime: '333',
-    phoneNightTime: '333',
-    mobile: '44',
-    fax: '333',
-    email: 'ivangabriel.2048@gmail.com',
-    representedByInmigrationAgent: 'No',
-    communicationMethod: COMUNICATION_METHOD_OPTIONS.EMAIL,
-    hasCreditCard: NO_YES_OPTIONS.YES
-  },
-  identificationFormData: {
-    passportNumber: '123456789',
-    /* passportNumberReEnter: '123456789', */// no va porque se repite
-    passportExpirationDate: '3 September, 2030',
+  ws.on('open', () => {
+    console.log('Connected to mainProgram');
+    sendMessage({ type: 'ready', message: 'Script is ready to execute instructions' });
+  });
 
-    otherIdetinficationType: OTHER_IDENTIFICATION_TYPE_OPTIONS.NATIONAL_ID, // DNI
-    dateDocumentIssued: '3 September, 2020',
-    expireDateDocument: '3 September, 2030',
-  },
-  ocupationDetailsFormData: {
-    industryActivity: 'agriculture', // Agriculture, Forestry and Fishing
-    occupationWork: 'farmer', // Aquaculture Farmer
+  ws.on('message', (message) => {
+    const data = JSON.parse(message);
+    handleMainProgramMessage(data);
+  });
+
+  ws.on('close', () => {
+    console.log('Disconnected from mainProgram');
+    isRunning = false;
+  });
+}
+
+// Enviar mensaje al `mainProgram`
+function sendMessage(data) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(data));
   }
 }
 
-const healthFormData = {
-  renalDialysis: NO_YES_OPTIONS.NO,
-  tuberculosis: NO_YES_OPTIONS.NO,
-
-  cancer: NO_YES_OPTIONS.NO,
-  heartDisease: NO_YES_OPTIONS.NO,
-  disability: NO_YES_OPTIONS.NO,
-
-  hospitalisation: NO_YES_OPTIONS.NO,
-  residentailCare: NO_YES_OPTIONS.NO,
-
-  tbRisk: NO_YES_OPTIONS.NO,
+// Manejar la comunicación con el `mainProgram`
+function handleMainProgramMessage(message) {
+  const { type, data } = message;
+  console.log(message)
+  switch (type) {
+    case 'start':
+      if (functionMap[data.functionName]) {
+        isRunning = true;
+        console.log(`Executing function: ${data.functionName}`);
+        executeFunction(data.functionName, data.args);
+      } else {
+        console.error(`Unknown function ${data.functionName}`);
+        sendMessage({ type: 'error', data: { message: `Unknown function ${data.functionName}` } });
+      }
+      break;
+    case 'stop':
+      console.log('Stopping script execution');
+      isRunning = false;
+      sendMessage({ type: 'stopped', message: 'Script execution stopped' });
+      ws.close();
+      break;
+    case 'connected':
+      console.log('Connected to mainProgram');
+      break;
+    /*   case 'set':
+        user = data.user;
+        dataClient = data.dataClient;
+        console.log('User and dataClient set');
+        break; */
+    default:
+      console.error(`Unknown message type: ${type}`);
+      break;
+  }
 }
 
-const characterFormData = {
-  imprisonment5Years: NO_YES_OPTIONS.NO,
-  imprisonment12Months: NO_YES_OPTIONS.NO,
-  deported: NO_YES_OPTIONS.NO,
+// Ejecutar la función solicitada por el `mainProgram`
+async function executeFunction(functionName, args) {
+  try {
+    const result = await functionMap[functionName](...args);
+    console.log(`Function ${functionName} executed with result: ${result}`);
+    sendMessage({ type: 'result', data: { functionName, result } });
 
-  charged: NO_YES_OPTIONS.NO,
-  convicted: NO_YES_OPTIONS.NO,
-  underInvestigation: NO_YES_OPTIONS.NO,
-
-  excluded: NO_YES_OPTIONS.NO,
-  removed: NO_YES_OPTIONS.NO,
+    // Finalizar la ejecución
+    if (isRunning) {
+      sendMessage({ type: 'finished', data: { message: `Execution of function ${functionName} finished` } });
+    }
+  } catch (error) {
+    console.error(`Error executing function ${functionName}: ${error.message}`);
+    sendMessage({ type: 'error', message: `Error executing function ${functionName}`, error: error.message });
+  }
 }
 
-const whsFormData = {
-  previousWhsPermitVisa: NO_YES_OPTIONS.NO,
-  sufficientFundsHoliday: NO_YES_OPTIONS.YES,
-  intendedTravelDate: '1 November, 2024',
-  beenToNz: NO_YES_OPTIONS.YES,
-  whenInNZDate: '19 September, 2024',
-  sufficientFundsOnwardTicket: NO_YES_OPTIONS.YES,
-  readRequirements: NO_YES_OPTIONS.YES,
-}
+// Iniciar la conexión al WebSocket
+initWebSocket();
 
-const user = {
-  username: 'ivangabriel2048',
-  password: '204824a132508796'
-}
-
-const dataClient = {
-  personalFormData,
-  healthFormData,
-  characterFormData,
-  whsFormData
-}
-
-scrape(user, dataClient)
+// Cerrar el script manualmente si es necesario
+process.on('SIGINT', () => {
+  console.log('Closing script...');
+  if (ws) ws.close();
+  process.exit();
+});
