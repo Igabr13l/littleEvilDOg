@@ -67,11 +67,6 @@ function handleMainProgramMessage(message) {
     case 'connected':
       console.log('Connected to mainProgram');
       break;
-    /*   case 'set':
-        user = data.user;
-        dataClient = data.dataClient;
-        console.log('User and dataClient set');
-        break; */
     default:
       console.error(`Unknown message type: ${type}`);
       break;
@@ -84,11 +79,6 @@ async function executeFunction(functionName, args) {
     const result = await functionMap[functionName](...args);
     console.log(`Function ${functionName} executed with result: ${result}`);
     sendMessage({ type: 'result', data: { functionName, result } });
-
-    // Finalizar la ejecución
-    if (isRunning) {
-      sendMessage({ type: 'finished', data: { message: `Execution of function ${functionName} finished` } });
-    }
   } catch (error) {
     console.error(`Error executing function ${functionName}: ${error.message}`);
     sendMessage({ type: 'error', message: `Error executing function ${functionName}`, error: error.message });
