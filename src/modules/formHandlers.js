@@ -87,6 +87,33 @@ const identificationForm = async (page, identificationFormData) => {
   await page.select('#ContentPlaceHolder1_identification_otherIdentificationDropdownlist', identificationFormData.otherIdetinficationType);
   await page.locator('input[id="ContentPlaceHolder1_wizardPageFooter_wizardPageNavigator_nextImageButton"]').click();
 }
+const visaDetailsForm = async (page, visaDetailsFormData) => {
+  await page.evaluate((visaDetailsFormData) => {
+    const dateInput = document.querySelector('#ContentPlaceHolder1_permitDetails_arrivalDateDatePicker_DatePicker');
+
+    // Asigna el valor de la fecha en el formato "3 September, 1993"
+    dateInput.value = visaDetailsFormData.arrivalDate;
+
+    // Dispara el evento 'change' para actualizar cualquier lógica dependiente de la fecha
+    const event = new Event('change', { bubbles: true });
+    dateInput.dispatchEvent(event);
+
+    const dateInput2 = document.querySelector('#ContentPlaceHolder1_permitDetails_expiryDateDatePicker_DatePicker');
+
+    // Asigna el valor de la fecha en el formato "3 September, 1993"
+    dateInput2.value = visaDetailsFormData.expiryDate;
+
+    // Dispara el evento 'change' para actualizar cualquier lógica dependiente de la fecha
+    const event2 = new Event('change', { bubbles: true });
+    dateInput.dispatchEvent(event2);
+
+    return true
+  }, visaDetailsFormData)
+
+  await page.select('#ContentPlaceHolder1_permitDetails_permitTypeDropDownList', visaDetailsFormData.permitType);
+
+  await page.locator('input[id="ContentPlaceHolder1_wizardPageFooter_wizardPageNavigator_nextImageButton"]').click();
+}
 
 const ocupationDetailsForm = async (page, ocupationDetailsFormData) => {
   await page.type('input[id="ContentPlaceHolder1_generalPersonal_industryControl_optionListSearch_SearchStringTextBox"]', ocupationDetailsFormData.industryActivity)
@@ -111,11 +138,13 @@ const ocupationDetailsForm = async (page, ocupationDetailsFormData) => {
 }
 
 const personalForm = async (page, data) => {
-  const { personalDetailsFormData, identificationFormData, ocupationDetailsFormData } = data
+  const { personalDetailsFormData, identificationFormData, ocupationDetailsFormData, visaDetailsFormData } = data
   await existCaptcha(page, 'personalForm')
   await personalDetailsForm(page, personalDetailsFormData)
   await existCaptcha(page, 'identificationForm')
   await identificationForm(page, identificationFormData)
+  await existCaptcha(page, 'visaDetailsForm')
+  await visaDetailsForm(page, visaDetailsFormData)
   await existCaptcha(page, 'ocupationDetailsForm')
   await ocupationDetailsForm(page, ocupationDetailsFormData)
 }
@@ -156,13 +185,13 @@ const characterForm = async (page, characterFormData) => {
 const whsForm = async (page, whsFormData) => {
   await existCaptcha(page, 'whsForm')
 
-  await page.select('#ContentPlaceHolder1_offshoreDetails_commonWHSQuestions_previousWhsPermitVisaDropDownList', whsFormData.previousWhsPermitVisa);
-  await page.select('#ContentPlaceHolder1_offshoreDetails_commonWHSQuestions_sufficientFundsHolidayDropDownList', whsFormData.sufficientFundsHoliday);
-  await page.select('#ContentPlaceHolder1_offshoreDetails_beenToNzDropDownList', whsFormData.beenToNz);
-  await page.select('#ContentPlaceHolder1_offshoreDetails_requirementsQuestions_sufficientFundsOnwardTicketDropDownList', whsFormData.sufficientFundsOnwardTicket);
-  await page.select('#ContentPlaceHolder1_offshoreDetails_requirementsQuestions_readRequirementsDropDownList', whsFormData.readRequirements);
+  await page.select('#ContentPlaceHolder1_onshoreDetails_commonWHSQuestions_previousWhsPermitVisaDropDownList', whsFormData.previousWhsPermitVisa);
+  await page.select('#ContentPlaceHolder1_onshoreDetails_commonWHSQuestions_sufficientFundsHolidayDropDownList', whsFormData.sufficientFundsHoliday);
+  // await page.select('#ContentPlaceHolder1_offshoreDetails_beenToNzDropDownList', whsFormData.beenToNz);
+  await page.select('#ContentPlaceHolder1_onshoreDetails_requirementsQuestions_sufficientFundsOnwardTicketDropDownList', whsFormData.sufficientFundsOnwardTicket);
+  await page.select('#ContentPlaceHolder1_onshoreDetails_requirementsQuestions_readRequirementsDropDownList', whsFormData.readRequirements);
 
-  await page.evaluate((whsFormData) => {
+  /* await page.evaluate((whsFormData) => {
     const dateInput = document.querySelector('#ContentPlaceHolder1_offshoreDetails_intendedTravelDateDatePicker_DatePicker');
 
     // Asigna el valor de la fecha en el formato "3 September, 1993"
@@ -181,7 +210,7 @@ const whsForm = async (page, whsFormData) => {
     // Dispara el evento 'change' para actualizar cualquier lógica dependiente de la fecha
     const eventTwo = new Event('change', { bubbles: true });
     dateInput.dispatchEvent(eventTwo);
-  }, whsFormData);
+  }, whsFormData); */
 
   await page.locator('input[id="ContentPlaceHolder1_wizardPageFooter_wizardPageNavigator_validateButton"]').click();
 }
