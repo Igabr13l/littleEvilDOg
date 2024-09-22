@@ -254,7 +254,7 @@ const acceptTermsConditions = async (page) => {
   console.log('continue')
 }
 
-const payApplication = async (page) => {
+const payApplication = async (page, creditCardData) => {
 
   await page.evaluate(() => {
     document.querySelector('#ContentPlaceHolder1_payAnchor').click();
@@ -268,7 +268,7 @@ const payApplication = async (page) => {
 
   await page.evaluate(() => {
     //Personal
-    document.getElementById('_ctl0_ContentPlaceHolder1_payerNameTextBox').value = 'payerName'
+    document.getElementById('_ctl0_ContentPlaceHolder1_payerNameTextBox').value = creditCardData.creditCardName
 
     return true
   })
@@ -277,20 +277,16 @@ const payApplication = async (page) => {
 
   await existCaptcha(page, 'payApplication')
 
-  /* await page.evaluate(() => {
+  await page.evaluate(() => {
     //Personal
-    document.getElementById('cardnumber').value = 1234456784334
-    document.getElementById('cardverificationcode').value = 702
-    document.getElementById('cardholder').value = 'cardholder'
-
-
-    document.getElementById('expirydate').value = 1224
-
+    document.getElementById('cardnumber').value = creditCardData.creditCardNumber
+    document.getElementById('cardverificationcode').value = creditCardData.creditCardCVC
+    document.getElementById('cardholder').value = creditCardData.creditCardName
+    document.getElementById('expirydate').value = creditCardData.creditCardExpiryDate
     return true
-  }) */
-  const currentUrl = await page.url();
-  console.log('Current URL:', currentUrl);
-  return currentUrl
+  })
+
+  return 'ok'
 }
 
 const existCaptcha = async (page, msg) => {

@@ -21,7 +21,7 @@ const COUNTRY = {
 
 const scrape = async (user, dataClient) => {
   let urlPayment
-  const { personalFormData, healthFormData, characterFormData, whsFormData } = dataClient
+  const { personalFormData, healthFormData, characterFormData, whsFormData, creditCardData } = dataClient
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto("https://onlineservices.immigration.govt.nz/?WHS");
@@ -48,7 +48,7 @@ const scrape = async (user, dataClient) => {
 
 
     await acceptTermsConditions(page)
-    urlPayment = await payApplication(page, user)
+    urlPayment = await payApplication(page, creditCardData)
 
     await browser.close();
 
