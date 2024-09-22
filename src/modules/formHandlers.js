@@ -286,6 +286,7 @@ const payApplication = async (page, creditCardData) => {
     return true
   })
 
+  await page.click('button.payment-button');
   return 'ok'
 }
 
