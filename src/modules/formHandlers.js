@@ -164,6 +164,9 @@ const healthForm = async (page, healthFormData) => {
 
   await page.select('#ContentPlaceHolder1_medicalConditions_tbRiskDropDownList', healthFormData.tbRisk);
 
+  if (healthFormData?.pregnancy) {
+    await page.select('#ContentPlaceHolder1_medicalConditions_pregnancy_pregnancyStatusDropDownList', healthFormData.tbRisk);
+  }
   await page.locator('input[id="ContentPlaceHolder1_wizardPageFooter_wizardPageNavigator_nextImageButton"]').click();
 }
 
