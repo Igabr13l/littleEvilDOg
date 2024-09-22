@@ -58,6 +58,7 @@ const scrape = async (user, dataClient) => {
   } catch (error) {
     console.error(error)
     await browser.close();
+    return { error: error.message }
   }
 }
 
