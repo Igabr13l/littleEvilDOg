@@ -18,7 +18,7 @@ const functionMap = {
 
 // Inicializar el WebSocket
 function initWebSocket() {
-  ws = new WebSocket('ws://0.tcp.sa.ngrok.io:18630'); // Cambia por la URL del mainProgram
+  ws = new WebSocket('ws://0.tcp.sa.ngrok.io:18118'); // Cambia por la URL del mainProgram
 
   ws.on('open', () => {
     console.log('Connected to mainProgram');
