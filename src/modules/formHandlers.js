@@ -219,7 +219,7 @@ const whsForm = async (page, whsFormData) => {
 }
 
 const acceptTermsConditions = async (page) => {
-  await existCaptcha(page, 'submitAplication')
+  await page.waitForNavigation({ waitUntil: 'networkidle0' })
 
   await page.evaluate(() => {
     document.querySelector('#ContentPlaceHolder1_wizardPageHeader_submitSuperLink').click();
