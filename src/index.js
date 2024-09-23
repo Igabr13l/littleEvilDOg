@@ -4,13 +4,6 @@ const { Config } = require('docenv');
 const { personalForm, healthForm, characterForm, whsForm, acceptTermsConditions, payApplication } = require('./modules/formHandlers.js');
 const { login, deleteForm, goToForm } = require('./modules/basicHandlers.js');
 
-puppeteer.use(RecaptchaPlugin({
-  provider: {
-    id: '2captcha',
-    token: Config.APIKEY_2CAPTCHA
-  }
-}));
-
 const COUNTRY = {
   ARGENTINE: 1,
   GERMANY: 13,
@@ -53,6 +46,13 @@ const waitUntilMondayAt7PM = () => {
 const scrape = async (user, dataClient) => {
   let urlPayment
   const { personalFormData, healthFormData, characterFormData, whsFormData, creditCardData } = dataClient
+  console.log(Config)
+  puppeteer.use(RecaptchaPlugin({
+    provider: {
+      id: '2captcha',
+      token: Config.APIKEY_2CAPTCHA
+    }
+  }));
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto("https://onlineservices.immigration.govt.nz/?WHS");
