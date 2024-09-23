@@ -54,7 +54,7 @@ const scrape = async (user, dataClient) => {
     }
   }));
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -93,16 +93,16 @@ const scrape = async (user, dataClient) => {
     console.error(error)
   }
 
-  await waitUntilMondayAt7PM()
+  /* await waitUntilMondayAt7PM()
 
   let formStatus
   do {
     await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
     formStatus = await page.evaluate(() => document.getElementById('ContentPlaceHolder1_countryRepeater_countryStatus_0').innerHTML)
     console.log('Form status:', formStatus)
-  } while (formStatus !== 'OPEN');
+  } while (formStatus !== 'OPEN'); */
   // va hasta el formulario
-  await goToForm(page, COUNTRY.ARGENTINE)
+  await goToForm(page, COUNTRY.GERMANY)
 
   try {
     await personalForm(page, personalFormData)
