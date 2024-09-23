@@ -37,7 +37,7 @@ const waitUntilMondayAt7PM = () => {
       now.getFullYear(),
       now.getMonth(),
       now.getDate() + daysUntilMonday, // Add the days needed
-      19, 0, 0, 0  // Set time to 19:00:00 (7 PM)
+      19, 0, 4, 0  // Set time to 19:00:00 (7 PM)
     );
 
     // Calculate the difference in milliseconds
