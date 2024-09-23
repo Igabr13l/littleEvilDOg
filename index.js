@@ -1,7 +1,11 @@
 // Dependencia WebSocket
 const WebSocket = require('ws');
 const { scrape } = require('./src');
-const Config = require('docenv-config');
+const { initEnv, Config } = require('docenv');
+const config = require('../docenv-config.js');
+
+initEnv(config);
+
 // Variables globales
 let ws;
 let isRunning = false;
