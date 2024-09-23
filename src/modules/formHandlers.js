@@ -221,26 +221,21 @@ const whsForm = async (page, whsFormData) => {
 const acceptTermsConditions = async (page) => {
   await existCaptcha(page, 'submitAplication')
 
-  await page.evaluate(() => {
-    document.querySelector('#ContentPlaceHolder1_wizardPageHeader_submitSuperLink').click();
-  });
+  await page.click('#ContentPlaceHolder1_wizardPageHeader_submitSuperLink')
 
-  /*  await existCaptcha(page, 'acceptTermsConditions')
-  */
   await page.waitForNavigation({ waitUntil: 'networkidle0' })
-  await page.evaluate(() => {
-    document.querySelector('#ContentPlaceHolder1_falseStatementCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_notesCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_circumstancesCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_warrantsCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_informationCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_healthCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_adviceCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_registrationCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_entitlementCheckbox').click();
-    document.querySelector('#ContentPlaceHolder1_permitExpiryCheckBox').click();
-    document.querySelector('#ContentPlaceHolder1_medicalInsuranceCheckBox').click();
-  });
+
+  await page.locator('#ContentPlaceHolder1_falseStatementCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_notesCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_circumstancesCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_warrantsCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_informationCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_healthCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_adviceCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_registrationCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_entitlementCheckbox').click();
+  await page.locator('#ContentPlaceHolder1_permitExpiryCheckBox').click();
+  await page.locator('#ContentPlaceHolder1_medicalInsuranceCheckBox').click();
 
   const { solved, error } = await page.solveRecaptchas();
 
@@ -259,22 +254,18 @@ const acceptTermsConditions = async (page) => {
 
 const payApplication = async (page, creditCardData) => {
 
-  await page.evaluate(() => {
-    document.querySelector('#ContentPlaceHolder1_payAnchor').click();
-  });
+  await page.click('#ContentPlaceHolder1_payAnchor')
   await page.waitForNavigation({ waitUntil: 'networkidle0' })
 
-  await page.evaluate(() => {
-    document.querySelector('#ContentPlaceHolder1_onlinePaymentAnchor2').click();
-  });
+  await page.click('#ContentPlaceHolder1_onlinePaymentAnchor2')
   await existCaptcha(page, 'payApplication')
 
-  await page.evaluate(() => {
+  await page.evaluate((creditCardData) => {
     //Personal
     document.getElementById('_ctl0_ContentPlaceHolder1_payerNameTextBox').value = creditCardData.creditCardName
 
     return true
-  })
+  }, creditCardData)
 
   await page.locator('input[id="_ctl0_ContentPlaceHolder1_okButton"]').click();
 
