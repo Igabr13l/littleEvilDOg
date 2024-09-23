@@ -7,6 +7,7 @@ const login = async (page, user) => {
 
   await page.locator('input[type="submit"]').click();
 
+  console.log('login finish')
   // finish login
 }
 

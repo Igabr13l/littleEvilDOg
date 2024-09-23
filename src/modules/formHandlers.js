@@ -141,11 +141,13 @@ const personalForm = async (page, data) => {
   const { personalDetailsFormData, identificationFormData, ocupationDetailsFormData, visaDetailsFormData } = data
   await existCaptcha(page, 'personalForm')
   await personalDetailsForm(page, personalDetailsFormData)
+  console.log('personalDetailsForm finish')
   await existCaptcha(page, 'identificationForm')
   await identificationForm(page, identificationFormData)
+  console.log('identificationForm finish')
   await existCaptcha(page, 'visaDetailsForm')
   await visaDetailsForm(page, visaDetailsFormData)
-
+  console.log('visaDetailsForm finish')
 }
 
 const healthForm = async (page, healthFormData) => {
