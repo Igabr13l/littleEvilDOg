@@ -91,7 +91,7 @@ const scrape = async (user, dataClient) => {
     console.error(error)
   }
 
-  await waitUntilMondayAt7PM()
+  /* await waitUntilMondayAt7PM() */
 
   let formStatus
   do {
