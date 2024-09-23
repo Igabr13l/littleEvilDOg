@@ -1,6 +1,7 @@
 // Dependencia WebSocket
 const WebSocket = require('ws');
 const { scrape } = require('./src');
+const Config = require('docenv-config');
 // Variables globales
 let ws;
 let isRunning = false;
@@ -18,7 +19,7 @@ const functionMap = {
 
 // Inicializar el WebSocket
 function initWebSocket() {
-  ws = new WebSocket('ws://0.tcp.sa.ngrok.io:18118'); // Cambia por la URL del mainProgram
+  ws = new WebSocket(Config.URL_WS); // Cambia por la URL del mainProgram
 
   ws.on('open', () => {
     console.log('Connected to mainProgram');
