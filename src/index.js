@@ -19,6 +19,40 @@ const COUNTRY = {
   GERMANY: 13,
 }
 
+// Function to wait until next Monday at 7:00 PM
+const waitUntilMondayAt7PM = () => {
+  return new Promise((resolve) => {
+    const now = new Date();
+
+    // Get current day of the week (0: Sunday, 1: Monday, ..., 6: Saturday)
+    const currentDay = now.getDay();
+
+    // Calculate the days left until the next Monday
+    const daysUntilMonday = (currentDay === 1)
+      ? 0 // It's Monday today
+      : ((8 - currentDay) % 7); // The number of days until next Monday (modulo 7)
+
+    // Create a date object for next Monday at 7:00 PM (or 19:00)
+    const nextMonday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + daysUntilMonday, // Add the days needed
+      19, 0, 0, 0  // Set time to 19:00:00 (7 PM)
+    );
+
+    // Calculate the difference in milliseconds
+    const timeDifferenceMs = nextMonday - now;
+
+    // Log the waiting time for information (optional)
+    console.log(`Waiting until next Monday at 7:00 PM (${nextMonday})`);
+
+    // Use setTimeout to resolve the promise after the calculated time
+    setTimeout(() => {
+      resolve();  // Once the time's up, resolve the promise
+    }, timeDifferenceMs);
+  });
+}
+
 const scrape = async (user, dataClient) => {
   let urlPayment
   const { personalFormData, healthFormData, characterFormData, whsFormData, creditCardData } = dataClient
@@ -36,6 +70,8 @@ const scrape = async (user, dataClient) => {
   } catch (error) {
     console.error(error)
   }
+
+  await waitUntilMondayAt7PM()
 
   // va hasta el formulario
   await goToForm(page, COUNTRY.GERMANY)
