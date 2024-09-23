@@ -112,7 +112,7 @@ const visaDetailsForm = async (page, visaDetailsFormData) => {
 
   await page.select('#ContentPlaceHolder1_permitDetails_permitTypeDropDownList', visaDetailsFormData.permitType);
 
-  await page.locator('input[id="ContentPlaceHolder1_wizardPageFooter_wizardPageNavigator_nextImageButton"]').click();
+  await page.locator('input[id="ContentPlaceHolder1_wizardPageHeader_nav_sectionTabs_TabHeaders_tabButton_1"]').click();
 }
 
 const ocupationDetailsForm = async (page, ocupationDetailsFormData) => {
@@ -145,8 +145,7 @@ const personalForm = async (page, data) => {
   await identificationForm(page, identificationFormData)
   await existCaptcha(page, 'visaDetailsForm')
   await visaDetailsForm(page, visaDetailsFormData)
-  await existCaptcha(page, 'ocupationDetailsForm')
-  await ocupationDetailsForm(page, ocupationDetailsFormData)
+
 }
 
 const healthForm = async (page, healthFormData) => {
