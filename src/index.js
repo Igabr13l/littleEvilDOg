@@ -82,8 +82,6 @@ const scrape = async (user, dataClient) => {
 
   await page.goto("https://onlineservices.immigration.govt.nz/?WHS");
 
-  await page.setViewport({ width: 1080, height: 1024 });
-
   await login(page, user)
 
   try {
