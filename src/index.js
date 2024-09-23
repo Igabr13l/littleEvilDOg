@@ -1,11 +1,8 @@
 const puppeteer = require('puppeteer-extra');
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
-const { initEnv, Config } = require('docenv');
-const config = require('../docenv-config.js');
+const { Config } = require('docenv');
 const { personalForm, healthForm, characterForm, whsForm, acceptTermsConditions, payApplication } = require('./modules/formHandlers.js');
 const { login, deleteForm, goToForm } = require('./modules/basicHandlers.js');
-
-initEnv(config);
 
 puppeteer.use(RecaptchaPlugin({
   provider: {
