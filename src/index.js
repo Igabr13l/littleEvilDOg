@@ -53,9 +53,22 @@ const scrape = async (user, dataClient) => {
       token: Config.APIKEY_2CAPTCHA
     }
   }));
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-gpu', // Si estás en un entorno que requiere el uso de GPU, pero esto no siempre es necesario
+      '--disable-dev-shm-usage', // Reduce el uso compartido de la memoria
+      '--disable-background-networking',
+      '--disable-extensions',
+      '--disable-sync',
+      '--disable-translate',
+    ],
+    defaultViewport: null
+  });
   const page = await browser.newPage();
-
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
   await page.setRequestInterception(true);
 
   page.on('request', (request) => {
@@ -69,8 +82,8 @@ const scrape = async (user, dataClient) => {
 
   await page.goto("https://onlineservices.immigration.govt.nz/?WHS");
 
-  /*   await page.setViewport({ width: 1080, height: 1024 });
-   */
+  await page.setViewport({ width: 1080, height: 1024 });
+
   await login(page, user)
 
   try {
