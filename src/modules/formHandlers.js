@@ -291,7 +291,7 @@ const payApplication = async (page, creditCardData) => {
 
   await page.click('button.payment-button');
 
-  await new Promise(resolve => setTimeout(resolve, 300000));
+  await new Promise(resolve => setTimeout(resolve, 3000000));
   await page.screenshot({ path: 'screenshot.png' });
   return 'ok'
 }
