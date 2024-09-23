@@ -280,14 +280,10 @@ const payApplication = async (page, creditCardData) => {
 
   await existCaptcha(page, 'payApplication')
 
-  await page.evaluate((creditCardData) => {
-    //Personal
-    document.getElementById('cardnumber').value = creditCardData.creditCardNumber
-    document.getElementById('cardverificationcode').value = creditCardData.creditCardCVC
-    document.getElementById('cardholder').value = creditCardData.creditCardName
-    document.getElementById('expirydate').value = creditCardData.creditCardExpiryDate
-    return true
-  }, creditCardData)
+  await page.type('#cardnumber', creditCardData.creditCardNumber)
+  await page.type('#cardverificationcode', creditCardData.creditCardCVC)
+  await page.type('#cardholder', creditCardData.creditCardName)
+  await page.type('#expirydate', creditCardData.creditCardExpiryDate)
 
   await page.click('button.payment-button');
 
