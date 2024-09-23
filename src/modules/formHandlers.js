@@ -269,27 +269,30 @@ const payApplication = async (page, creditCardData) => {
   });
   await existCaptcha(page, 'payApplication')
 
-  await page.evaluate(() => {
+  await page.evaluate((creditCardData) => {
     //Personal
     document.getElementById('_ctl0_ContentPlaceHolder1_payerNameTextBox').value = creditCardData.creditCardName
 
     return true
-  })
+  }, creditCardData)
 
   await page.locator('input[id="_ctl0_ContentPlaceHolder1_okButton"]').click();
 
   await existCaptcha(page, 'payApplication')
 
-  await page.evaluate(() => {
+  await page.evaluate((creditCardData) => {
     //Personal
     document.getElementById('cardnumber').value = creditCardData.creditCardNumber
     document.getElementById('cardverificationcode').value = creditCardData.creditCardCVC
     document.getElementById('cardholder').value = creditCardData.creditCardName
     document.getElementById('expirydate').value = creditCardData.creditCardExpiryDate
     return true
-  })
+  }, creditCardData)
 
   await page.click('button.payment-button');
+
+  await new Promise(resolve => setTimeout(resolve, 300000));
+  await page.screenshot({ path: 'screenshot.png' });
   return 'ok'
 }
 
