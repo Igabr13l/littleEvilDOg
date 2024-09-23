@@ -21,7 +21,15 @@ const functionMap = {
   }
 };
 
-let IsWSConnected = false;
+let isWSConnected = false;
+let clientId;
+function reconnectWebSocket() {
+  setTimeout(() => {
+    console.log('Reconnecting to mainProgram...');
+    initWebSocket();
+  }, 5000); // Reintentar cada 10 segundos
+}
+
 // Inicializar el WebSocket
 function initWebSocket() {
   ws = new WebSocket(Config.URL_WS); // Cambia por la URL del mainProgram
@@ -29,36 +37,50 @@ function initWebSocket() {
   // necesito saber si esta conectado, si lo esta IsWSConnected cambia a true
   ws.on('open', () => {
     console.log('Connected to mainProgram');
-    IsWSConnected = true;
-    sendMessage({ type: 'ready', message: 'Script is ready to execute instructions' });
+    isWSConnected = true;
+
+    if (clientId) {
+      sendMessage({
+        type: 'reconnect',
+        clientId: clientId,  // Enviamos el clientId en la reconexión
+        message: 'Client reconnected with previous ID',
+      });
+    } else {
+      // Si no tenemos clientId, enviamos un mensaje de "ready" sin el ID
+      sendMessage({
+        type: 'ready',
+        message: 'Script is ready to execute instructions',
+      });
+    }
   });
 
   ws.on('message', (message) => {
     const data = JSON.parse(message);
-    handleMainProgramMessage(data);
+
+    if (data.type === 'assignId' && data.clientId) {
+      clientId = data.clientId;
+      console.log(`Client ID: ${clientId} assigned by server`);
+    }
+
+    if (data.type === 'reconnected' && data.clientId) {
+      console.log(`Client ID: ${clientId} reconnected to server`);
+    }
+
+    if (data.type !== 'assignId' && data.type !== 'reconnected') {
+      handleMainProgramMessage(data);
+    }
   });
 
   ws.on('close', () => {
     console.log('Disconnected from mainProgram');
-    IsWSConnected = false
-    setTimeout(() => {
-      if (!IsWSConnected) {
-        console.log('Reconnecting to mainProgram');
-        initWebSocket()
-      };
-    }, 5000);
+    isWSConnected = false;
+    reconnectWebSocket();
   });
 
   ws.on('error', () => {
     // el websocket intentara volver a conectarse a la url cada 5 segundos hasta que lo consiga
     console.log('Error connecting to mainProgram');
-    IsWSConnected = false
-    setTimeout(() => {
-      if (!IsWSConnected) {
-        console.log('Reconnecting to mainProgram');
-        initWebSocket()
-      };
-    }, 5000);
+    reconnectWebSocket();
   });
 }
 
