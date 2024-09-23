@@ -21,12 +21,15 @@ const functionMap = {
   }
 };
 
+let IsWSConnected = false;
 // Inicializar el WebSocket
 function initWebSocket() {
   ws = new WebSocket(Config.URL_WS); // Cambia por la URL del mainProgram
 
+  // necesito saber si esta conectado, si lo esta IsWSConnected cambia a true
   ws.on('open', () => {
     console.log('Connected to mainProgram');
+    IsWSConnected = true;
     sendMessage({ type: 'ready', message: 'Script is ready to execute instructions' });
   });
 
@@ -37,7 +40,19 @@ function initWebSocket() {
 
   ws.on('close', () => {
     console.log('Disconnected from mainProgram');
-    isRunning = false;
+    IsWSConnected = false
+    setTimeout(() => {
+      if (!IsWSConnected) initWebSocket();
+    }, 5000);
+  });
+
+  ws.on('error', () => {
+    // el websocket intentara volver a conectarse a la url cada 5 segundos hasta que lo consiga
+    console.log('Error connecting to mainProgram');
+    IsWSConnected = false
+    setTimeout(() => {
+      if (!IsWSConnected) initWebSocket();
+    }, 5000);
   });
 }
 
