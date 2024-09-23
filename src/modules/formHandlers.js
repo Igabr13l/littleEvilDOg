@@ -279,16 +279,18 @@ const payApplication = async (page, creditCardData) => {
 
   await existCaptcha(page, 'payApplication')
 
-  await page.type('#cardnumber', creditCardData.creditCardNumber)
+  const currentUrl = await page.url();
+
+  /* await page.type('#cardnumber', creditCardData.creditCardNumber)
   await page.type('#cardverificationcode', creditCardData.creditCardCVC)
   await page.type('#cardholder', creditCardData.creditCardName)
   await page.type('#expirydate', creditCardData.creditCardExpiryDate)
 
-  await page.click('button.payment-button');
+  await page.click('button.payment-button'); */
 
-  await new Promise(resolve => setTimeout(resolve, 15000));
-  await page.screenshot({ path: 'screenshot.png' });
-  return 'ok'
+  /* await new Promise(resolve => setTimeout(resolve, 15000));
+  await page.screenshot({ path: 'screenshot.png' }); */
+  return currentUrl
 }
 
 const existCaptcha = async (page, msg) => {
