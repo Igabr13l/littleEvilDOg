@@ -2,7 +2,7 @@
 const WebSocket = require('ws');
 const { scrape } = require('./src');
 const { initEnv, Config } = require('docenv');
-const config = require('../docenv-config.js');
+const config = require('./docenv-config.js');
 
 initEnv(config);
 
@@ -42,7 +42,10 @@ function initWebSocket() {
     console.log('Disconnected from mainProgram');
     IsWSConnected = false
     setTimeout(() => {
-      if (!IsWSConnected) initWebSocket();
+      if (!IsWSConnected) {
+        console.log('Reconnecting to mainProgram');
+        initWebSocket()
+      };
     }, 5000);
   });
 
@@ -51,7 +54,10 @@ function initWebSocket() {
     console.log('Error connecting to mainProgram');
     IsWSConnected = false
     setTimeout(() => {
-      if (!IsWSConnected) initWebSocket();
+      if (!IsWSConnected) {
+        console.log('Reconnecting to mainProgram');
+        initWebSocket()
+      };
     }, 5000);
   });
 }
