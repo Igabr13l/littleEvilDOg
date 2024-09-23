@@ -43,13 +43,13 @@ function initWebSocket() {
       sendMessage({
         type: 'reconnect',
         clientId: clientId,  // Enviamos el clientId en la reconexión
-        message: 'Client reconnected with previous ID',
+        data: { message: 'Client reconnected with previous ID' },
       });
     } else {
       // Si no tenemos clientId, enviamos un mensaje de "ready" sin el ID
       sendMessage({
         type: 'ready',
-        message: 'Script is ready to execute instructions',
+        data: { message: 'Script is ready to execute instructions', }
       });
     }
   });
@@ -109,7 +109,7 @@ function handleMainProgramMessage(message) {
     case 'stop':
       console.log('Stopping script execution');
       isRunning = false;
-      sendMessage({ type: 'stopped', message: 'Script execution stopped' });
+      sendMessage({ type: 'stopped', data: { message: 'Script execution stopped' } });
       ws.close();
       break;
     case 'connected':
@@ -129,7 +129,7 @@ async function executeFunction(functionName, args) {
     sendMessage({ type: 'result', data: { functionName, result } });
   } catch (error) {
     console.error(`Error executing function ${functionName}: ${error.message}`);
-    sendMessage({ type: 'error', message: `Error executing function ${functionName}`, error: error.message });
+    sendMessage({ type: 'error', message: `Error executing function ${functionName}`, error: error.message, data: { message: `Error executing function ${functionName}` } });
   }
 }
 
