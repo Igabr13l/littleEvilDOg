@@ -27,7 +27,7 @@ const waitUntilMondayAt7PM = () => {
       now.getFullYear(),
       now.getMonth(),
       now.getDate() + daysUntilMonday, // Add the days needed
-      19, 0, 4, 0  // Set time to 19:00:00 (7 PM)
+      19, 0, 0, 0  // Set time to 19:00:00 (7 PM)
     );
 
     // Calculate the difference in milliseconds
@@ -93,8 +93,14 @@ const scrape = async (user, dataClient) => {
     console.error(error)
   }
 
-  /* await waitUntilMondayAt7PM() */
+  await waitUntilMondayAt7PM()
 
+  let formStatus
+  do {
+    await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
+    formStatus = await page.evaluate(() => document.getElementById('ContentPlaceHolder1_countryRepeater_countryStatus_0').innerHTML)
+    console.log('Form status:', formStatus)
+  } while (formStatus !== 'OPEN');
   // va hasta el formulario
   await goToForm(page, COUNTRY.GERMANY)
 
