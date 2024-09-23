@@ -102,7 +102,7 @@ const scrape = async (user, dataClient) => {
     console.log('Form status:', formStatus)
   } while (formStatus !== 'OPEN');
   // va hasta el formulario
-  await goToForm(page, COUNTRY.GERMANY)
+  await goToForm(page, COUNTRY.ARGENTINE)
 
   try {
     await personalForm(page, personalFormData)
