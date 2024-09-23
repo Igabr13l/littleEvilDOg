@@ -310,7 +310,7 @@ const existCaptcha = async (page, msg) => {
     }
     if (error) {
       console.log('error catchap')
-      throw new Error('exist captcha when ' + msg)
+      throw new Error('exist captcha and 2captcha cant resolve ' + msg)
     }
   }
   console.log('continue')
